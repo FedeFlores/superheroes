@@ -1,5 +1,6 @@
 package com.fedeflores.superheroes.service;
 
+import com.fedeflores.superheroes.exception.SuperheroNotFoundException;
 import com.fedeflores.superheroes.model.SuperheroDTO;
 import com.fedeflores.superheroes.repository.SuperheroesRepository;
 import com.fedeflores.superheroes.repository.entity.Superhero;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -43,7 +45,7 @@ public class SuperheroesServiceTest {
     }
 
     @Test
-    public void getSuperheroById() {
+    public void getSuperheroById() throws SuperheroNotFoundException {
         Superhero sh = new Superhero(1, "Batman");
         SuperheroDTO dto = new SuperheroDTO(1, "Batman");
 
@@ -52,6 +54,13 @@ public class SuperheroesServiceTest {
         SuperheroDTO response = superheroesService.getSuperheroById(1);
 
         assertEquals(dto, response);
+    }
+
+    @Test
+    public void getSuperheroById_NotFoundException() {
+        when(superheroesRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        assertThrows(SuperheroNotFoundException.class, () -> superheroesService.getSuperheroById(1));
     }
 
     @Test
@@ -86,11 +95,28 @@ public class SuperheroesServiceTest {
     }
 
     @Test
+    public void updateSuperhero_NotFoundException() {
+        SuperheroDTO updateRequested = new SuperheroDTO();
+        updateRequested.setName("Captain America");
+
+        when(superheroesRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        assertThrows(SuperheroNotFoundException.class, () -> superheroesService.updateSuperhero(1, updateRequested));
+    }
+
+    @Test
     public void deleteSuperhero() {
         when(superheroesRepository.existsById(anyInt())).thenReturn(true);
 
         superheroesService.deleteSuperhero(1);
 
         verify(superheroesRepository, times(1)).deleteById(1);
+    }
+
+    @Test
+    public void deleteSuperhero_NotFoundException() {
+        when(superheroesRepository.existsById(anyInt())).thenReturn(false);
+
+        assertThrows(SuperheroNotFoundException.class, () -> superheroesService.deleteSuperhero(1));
     }
 }
