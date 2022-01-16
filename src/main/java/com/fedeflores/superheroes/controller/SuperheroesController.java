@@ -1,6 +1,6 @@
 package com.fedeflores.superheroes.controller;
 
-import com.fedeflores.superheroes.model.Superhero;
+import com.fedeflores.superheroes.model.SuperheroDTO;
 import com.fedeflores.superheroes.service.SuperheroesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,23 +20,23 @@ public class SuperheroesController {
     }
 
     @GetMapping("/superheroes/all")
-    public ResponseEntity<List<Superhero>> getAllSuperheroes(){
+    public ResponseEntity<List<SuperheroDTO>> getAllSuperheroes(){
         return ResponseEntity.ok(superheroesService.getAllSuperheroes());
     }
 
     @GetMapping("/superhero/{id}")
-    public ResponseEntity<Superhero> getSuperheroById(@PathVariable int id){
+    public ResponseEntity<SuperheroDTO> getSuperheroById(@PathVariable int id){
         return ResponseEntity.ok(superheroesService.getSuperheroById(id));
     }
 
     @GetMapping("/superheroes")
-    public ResponseEntity<List<Superhero>> getSuperheroesByName(@RequestParam String name){
+    public ResponseEntity<List<SuperheroDTO>> getSuperheroesByName(@RequestParam String name){
         return ResponseEntity.ok(superheroesService.getSuperheroesByName(name));
     }
 
     @PutMapping("/superhero/{id}")
-    public ResponseEntity<Superhero> updateSuperhero(@PathVariable int id, @RequestBody Superhero superhero){
-        return ResponseEntity.ok(superheroesService.updateSuperhero(id, superhero));
+    public ResponseEntity<SuperheroDTO> updateSuperhero(@PathVariable int id, @RequestBody SuperheroDTO superheroDTO){
+        return ResponseEntity.ok(superheroesService.updateSuperhero(id, superheroDTO));
     }
 
     @DeleteMapping("/superhero/{id}")

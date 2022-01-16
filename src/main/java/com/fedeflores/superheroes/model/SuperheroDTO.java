@@ -1,11 +1,14 @@
 package com.fedeflores.superheroes.model;
 
-public class Superhero {
+public class SuperheroDTO {
 
     public int id;
     public String name;
 
-    public Superhero(int id, String name) {
+    public SuperheroDTO() {
+    }
+
+    public SuperheroDTO(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -25,4 +28,6 @@ public class Superhero {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }
