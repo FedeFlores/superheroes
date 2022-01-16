@@ -40,7 +40,6 @@ public class SuperheroesServiceTest {
         List<SuperheroDTO> response = superheroesService.getAllSuperheroes();
 
         assertEquals(dtos, response);
-
     }
 
     @Test

@@ -12,7 +12,7 @@ public interface SuperheroesService {
 
     List<SuperheroDTO> getSuperheroesByName(String name);
 
-    SuperheroDTO updateSuperhero(int id, SuperheroDTO superheroDTO);
+    SuperheroDTO updateSuperhero(int id, SuperheroDTO requestedChanges);
 
     void deleteSuperhero(int id);
 

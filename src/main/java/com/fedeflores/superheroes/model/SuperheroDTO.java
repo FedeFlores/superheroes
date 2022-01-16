@@ -1,5 +1,7 @@
 package com.fedeflores.superheroes.model;
 
+import java.util.Objects;
+
 public class SuperheroDTO {
 
     public int id;
@@ -29,5 +31,16 @@ public class SuperheroDTO {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SuperheroDTO that = (SuperheroDTO) o;
+        return id == that.id && name.equals(that.name);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 }
