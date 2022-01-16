@@ -79,7 +79,7 @@ public class SuperheroesServiceTest {
     }
 
     @Test
-    public void updateSuperhero() {
+    public void updateSuperhero() throws SuperheroNotFoundException {
         Superhero foundSuperhero = new Superhero(1, "Batman");
         SuperheroDTO updateRequested = new SuperheroDTO();
         updateRequested.setName("Captain America");
@@ -105,7 +105,7 @@ public class SuperheroesServiceTest {
     }
 
     @Test
-    public void deleteSuperhero() {
+    public void deleteSuperhero() throws SuperheroNotFoundException {
         when(superheroesRepository.existsById(anyInt())).thenReturn(true);
 
         superheroesService.deleteSuperhero(1);

@@ -1,5 +1,6 @@
 package com.fedeflores.superheroes.controller;
 
+import com.fedeflores.superheroes.exception.SuperheroNotFoundException;
 import com.fedeflores.superheroes.model.SuperheroDTO;
 import com.fedeflores.superheroes.service.SuperheroesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class SuperheroesController {
     }
 
     @GetMapping("/superhero/{id}")
-    public ResponseEntity<SuperheroDTO> getSuperheroById(@PathVariable int id){
+    public ResponseEntity<SuperheroDTO> getSuperheroById(@PathVariable int id) throws SuperheroNotFoundException {
         return ResponseEntity.ok(superheroesService.getSuperheroById(id));
     }
 
@@ -35,12 +36,12 @@ public class SuperheroesController {
     }
 
     @PutMapping("/superhero/{id}")
-    public ResponseEntity<SuperheroDTO> updateSuperhero(@PathVariable int id, @RequestBody SuperheroDTO superheroDTO){
+    public ResponseEntity<SuperheroDTO> updateSuperhero(@PathVariable int id, @RequestBody SuperheroDTO superheroDTO) throws SuperheroNotFoundException {
         return ResponseEntity.ok(superheroesService.updateSuperhero(id, superheroDTO));
     }
 
     @DeleteMapping("/superhero/{id}")
-    public ResponseEntity<HttpStatus> deleteSuperhero(@PathVariable int id){
+    public ResponseEntity<HttpStatus> deleteSuperhero(@PathVariable int id) throws SuperheroNotFoundException {
         superheroesService.deleteSuperhero(id);
         return ResponseEntity.noContent().build();
     }

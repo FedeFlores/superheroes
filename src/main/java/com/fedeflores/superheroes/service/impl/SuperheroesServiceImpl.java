@@ -1,5 +1,6 @@
 package com.fedeflores.superheroes.service.impl;
 
+import com.fedeflores.superheroes.exception.SuperheroNotFoundException;
 import com.fedeflores.superheroes.model.SuperheroDTO;
 import com.fedeflores.superheroes.repository.SuperheroesRepository;
 import com.fedeflores.superheroes.repository.entity.Superhero;
@@ -29,12 +30,10 @@ public class SuperheroesServiceImpl implements SuperheroesService {
     }
 
     @Override
-    public SuperheroDTO getSuperheroById(int id) {
+    public SuperheroDTO getSuperheroById(int id) throws SuperheroNotFoundException {
         SuperheroDTO dto = new SuperheroDTO();
-        // TODO si no existe, error
-        Optional<Superhero> superheroOpt = superheroesRepository.findById(id);
-        superheroOpt.ifPresent(sh -> BeanUtils.copyProperties(sh, dto));
-        return dto;
+        Superhero sh = superheroesRepository.findById(id).orElseThrow(() -> new SuperheroNotFoundException("No superhero found with id: " + id));
+        return copyToDTO(sh);
     }
 
     @Override
@@ -44,13 +43,9 @@ public class SuperheroesServiceImpl implements SuperheroesService {
     }
 
     @Override
-    public SuperheroDTO updateSuperhero(int id, SuperheroDTO requestedChanges) {
+    public SuperheroDTO updateSuperhero(int id, SuperheroDTO requestedChanges) throws SuperheroNotFoundException {
         Optional<Superhero> superheroOpt = superheroesRepository.findById(id);
-        //TODO si no existe, error
-        if (superheroOpt.isEmpty()){
-
-        }
-        Superhero sh = superheroOpt.get();
+        Superhero sh = superheroOpt.orElseThrow(() -> new SuperheroNotFoundException("No superhero found with id: " + id));
         sh.setName(requestedChanges.getName());
         Superhero updatedSH = superheroesRepository.save(sh);
         SuperheroDTO updatedDTO = new SuperheroDTO();
@@ -59,9 +54,12 @@ public class SuperheroesServiceImpl implements SuperheroesService {
     }
 
     @Override
-    public void deleteSuperhero(int id) {
-        //TODO si no existe, error
-        if (superheroesRepository.existsById(id)) superheroesRepository.deleteById(id);
+    public void deleteSuperhero(int id) throws SuperheroNotFoundException {
+        if (superheroesRepository.existsById(id)) {
+            superheroesRepository.deleteById(id);
+        } else {
+            throw new SuperheroNotFoundException("No superhero found with id: " + id);
+        }
 
     }
 
