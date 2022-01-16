@@ -1,6 +1,5 @@
 package com.fedeflores.superheroes.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fedeflores.superheroes.model.Superhero;
 import com.fedeflores.superheroes.service.SuperheroesService;
 import org.junit.jupiter.api.Test;
@@ -29,9 +28,6 @@ public class SuperheroesControllerTest {
     @MockBean
     private SuperheroesService superheroesService;
 
-    @Autowired
-    private ObjectMapper objMapper;
-
     @Test
     void getAllSuperheroes() throws Exception {
         Superhero sh1 = new Superhero(1, "Batman");
@@ -40,7 +36,7 @@ public class SuperheroesControllerTest {
 
         when(superheroesService.getAllSuperheroes()).thenReturn(Arrays.asList(sh1, sh2,sh3));
 
-        mockMvc.perform(get("/superheroes"))
+        mockMvc.perform(get("/superheroes/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(3)));
     }
@@ -64,7 +60,7 @@ public class SuperheroesControllerTest {
 
         when(superheroesService.getSuperheroesByName(anyString())).thenReturn(Arrays.asList(sh1, sh2));
 
-        mockMvc.perform(get("/superheroes/{name}", "man"))
+        mockMvc.perform(get("/superheroes").param("name", "man"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(2)));
     }
@@ -77,7 +73,7 @@ public class SuperheroesControllerTest {
 
         mockMvc.perform(put("/superhero/{id}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objMapper.writeValueAsString(sh)))
+                .content("{ \"name\" : \"Batman\" }"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("Batman")));
