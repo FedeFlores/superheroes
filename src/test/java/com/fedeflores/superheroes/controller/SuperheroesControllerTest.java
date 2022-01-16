@@ -1,6 +1,6 @@
 package com.fedeflores.superheroes.controller;
 
-import com.fedeflores.superheroes.model.Superhero;
+import com.fedeflores.superheroes.model.SuperheroDTO;
 import com.fedeflores.superheroes.service.SuperheroesService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +30,9 @@ public class SuperheroesControllerTest {
 
     @Test
     void getAllSuperheroes() throws Exception {
-        Superhero sh1 = new Superhero(1, "Batman");
-        Superhero sh2 = new Superhero(2, "Spiderman");
-        Superhero sh3 = new Superhero(3, "Ironman");
+        SuperheroDTO sh1 = new SuperheroDTO(1, "Batman");
+        SuperheroDTO sh2 = new SuperheroDTO(2, "Spiderman");
+        SuperheroDTO sh3 = new SuperheroDTO(3, "Ironman");
 
         when(superheroesService.getAllSuperheroes()).thenReturn(Arrays.asList(sh1, sh2,sh3));
 
@@ -43,7 +43,7 @@ public class SuperheroesControllerTest {
 
     @Test
     void getSuperheroById() throws Exception {
-        Superhero sh = new Superhero(1, "Batman");
+        SuperheroDTO sh = new SuperheroDTO(1, "Batman");
 
         when(superheroesService.getSuperheroById(anyInt())).thenReturn(sh);
 
@@ -55,8 +55,8 @@ public class SuperheroesControllerTest {
 
     @Test
     void getSuperheroesByName() throws Exception {
-        Superhero sh1 = new Superhero(1, "Batman");
-        Superhero sh2 = new Superhero(2, "Spiderman");
+        SuperheroDTO sh1 = new SuperheroDTO(1, "Batman");
+        SuperheroDTO sh2 = new SuperheroDTO(2, "Spiderman");
 
         when(superheroesService.getSuperheroesByName(anyString())).thenReturn(Arrays.asList(sh1, sh2));
 
@@ -67,9 +67,9 @@ public class SuperheroesControllerTest {
 
     @Test
     void updateSuperhero() throws Exception {
-        Superhero sh = new Superhero(1, "Batman");
+        SuperheroDTO sh = new SuperheroDTO(1, "Batman");
 
-        when(superheroesService.updateSuperhero(anyInt(), any(Superhero.class))).thenReturn(sh);
+        when(superheroesService.updateSuperhero(anyInt(), any(SuperheroDTO.class))).thenReturn(sh);
 
         mockMvc.perform(put("/superhero/{id}", 1)
                 .contentType(MediaType.APPLICATION_JSON)

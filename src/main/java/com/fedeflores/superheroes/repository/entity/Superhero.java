@@ -1,9 +1,18 @@
-package com.fedeflores.superheroes.model;
+package com.fedeflores.superheroes.repository.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Superhero {
 
-    public int id;
-    public String name;
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    private int id;
+    private String name;
+
 
     public Superhero(int id, String name) {
         this.id = id;
