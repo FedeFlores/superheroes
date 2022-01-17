@@ -13,6 +13,8 @@ public class Superhero {
     private int id;
     private String name;
 
+    public Superhero() {
+    }
 
     public Superhero(int id, String name) {
         this.id = id;
