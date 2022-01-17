@@ -10,13 +10,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -40,6 +41,17 @@ public class SuperheroesControllerTest {
         mockMvc.perform(get("/superheroes/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(3)));
+        verify(superheroesService, times(1)).getAllSuperheroes();
+    }
+
+    @Test
+    void getAllSuperheroes_ReturnsNoContent() throws Exception {
+        when(superheroesService.getAllSuperheroes()).thenReturn(new ArrayList<>());
+
+        mockMvc.perform(get("/superheroes/all"))
+                .andExpect(status().isNoContent())
+                .andExpect(content().string(""));
+        verify(superheroesService, times(1)).getAllSuperheroes();
     }
 
     @Test
@@ -52,6 +64,7 @@ public class SuperheroesControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("Batman")));
+        verify(superheroesService, times(1)).getSuperheroById(anyInt());
     }
 
     @Test
@@ -62,6 +75,7 @@ public class SuperheroesControllerTest {
         mockMvc.perform(get("/superhero/{id}", 1))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("Superhero not found")));
+        verify(superheroesService, times(1)).getSuperheroById(anyInt());
     }
 
     @Test
@@ -74,6 +88,17 @@ public class SuperheroesControllerTest {
         mockMvc.perform(get("/superheroes").param("name", "man"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(2)));
+        verify(superheroesService, times(1)).getSuperheroesByName(anyString());
+    }
+
+    @Test
+    void getSuperheroesByName_ReturnsNoContent() throws Exception {
+        when(superheroesService.getSuperheroesByName(anyString())).thenReturn(new ArrayList<>());
+
+        mockMvc.perform(get("/superheroes").param("name", "man"))
+                .andExpect(status().isNoContent())
+                .andExpect(content().string(""));
+        verify(superheroesService, times(1)).getSuperheroesByName(anyString());
     }
 
     @Test
@@ -88,6 +113,7 @@ public class SuperheroesControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("Batman")));
+        verify(superheroesService, times(1)).updateSuperhero(anyInt(), any(SuperheroDTO.class));
     }
 
     @Test
@@ -100,12 +126,14 @@ public class SuperheroesControllerTest {
                 .content("{ \"name\" : \"Batman\" }"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("Superhero not found")));
+        verify(superheroesService, times(1)).updateSuperhero(anyInt(), any(SuperheroDTO.class));
     }
 
     @Test
     void deleteSuperhero() throws Exception {
         mockMvc.perform(delete("/superhero/{id}", 1))
                 .andExpect(status().isNoContent());
+        verify(superheroesService, times(1)).deleteSuperhero(anyInt());
     }
 
     @Test
@@ -115,6 +143,7 @@ public class SuperheroesControllerTest {
         mockMvc.perform(delete("/superhero/{id}", 1))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("Superhero not found")));
+        verify(superheroesService, times(1)).deleteSuperhero(anyInt());
     }
 
 
