@@ -31,7 +31,7 @@ public class SuperheroesControllerTest {
     private SuperheroesService superheroesService;
 
     @Test
-    void getAllSuperheroes() throws Exception {
+    public void getAllSuperheroes() throws Exception {
         SuperheroDTO sh1 = new SuperheroDTO(1, "Batman");
         SuperheroDTO sh2 = new SuperheroDTO(2, "Spiderman");
         SuperheroDTO sh3 = new SuperheroDTO(3, "Ironman");
@@ -45,7 +45,7 @@ public class SuperheroesControllerTest {
     }
 
     @Test
-    void getAllSuperheroes_ReturnsNoContent() throws Exception {
+    public void getAllSuperheroes_ReturnsNoContent() throws Exception {
         when(superheroesService.getAllSuperheroes()).thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/superheroes/all"))
@@ -55,7 +55,7 @@ public class SuperheroesControllerTest {
     }
 
     @Test
-    void getSuperheroById() throws Exception {
+    public void getSuperheroById() throws Exception {
         SuperheroDTO sh = new SuperheroDTO(1, "Batman");
 
         when(superheroesService.getSuperheroById(anyInt())).thenReturn(sh);
@@ -68,7 +68,7 @@ public class SuperheroesControllerTest {
     }
 
     @Test
-    void getSuperheroById_ReturnsNotFound() throws Exception {
+    public void getSuperheroById_ReturnsNotFound() throws Exception {
         when(superheroesService.getSuperheroById(anyInt()))
                 .thenThrow(new SuperheroNotFoundException("Superhero not found"));
 
@@ -79,7 +79,7 @@ public class SuperheroesControllerTest {
     }
 
     @Test
-    void getSuperheroesByName() throws Exception {
+    public void getSuperheroesByName() throws Exception {
         SuperheroDTO sh1 = new SuperheroDTO(1, "Batman");
         SuperheroDTO sh2 = new SuperheroDTO(2, "Spiderman");
 
@@ -92,7 +92,7 @@ public class SuperheroesControllerTest {
     }
 
     @Test
-    void getSuperheroesByName_ReturnsNoContent() throws Exception {
+    public void getSuperheroesByName_ReturnsNoContent() throws Exception {
         when(superheroesService.getSuperheroesByName(anyString())).thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/superheroes").param("name", "man"))
@@ -102,7 +102,7 @@ public class SuperheroesControllerTest {
     }
 
     @Test
-    void updateSuperhero() throws Exception {
+    public void updateSuperhero() throws Exception {
         SuperheroDTO sh = new SuperheroDTO(1, "Batman");
 
         when(superheroesService.updateSuperhero(anyInt(), any(SuperheroDTO.class))).thenReturn(sh);
@@ -117,7 +117,7 @@ public class SuperheroesControllerTest {
     }
 
     @Test
-    void updateSuperhero_ReturnsNotFound() throws Exception {
+    public void updateSuperhero_ReturnsNotFound() throws Exception {
         when(superheroesService.updateSuperhero(anyInt(), any(SuperheroDTO.class)))
                 .thenThrow(new SuperheroNotFoundException("Superhero not found"));
 
@@ -130,14 +130,14 @@ public class SuperheroesControllerTest {
     }
 
     @Test
-    void deleteSuperhero() throws Exception {
+    public void deleteSuperhero() throws Exception {
         mockMvc.perform(delete("/superhero/{id}", 1))
                 .andExpect(status().isNoContent());
         verify(superheroesService, times(1)).deleteSuperhero(anyInt());
     }
 
     @Test
-    void deleteSuperhero_ReturnsNotFound() throws Exception {
+    public void deleteSuperhero_ReturnsNotFound() throws Exception {
         doThrow(new SuperheroNotFoundException("Superhero not found")).when(superheroesService).deleteSuperhero(anyInt());
 
         mockMvc.perform(delete("/superhero/{id}", 1))
