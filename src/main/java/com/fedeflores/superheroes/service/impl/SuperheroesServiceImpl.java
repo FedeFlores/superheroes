@@ -7,6 +7,8 @@ import com.fedeflores.superheroes.repository.entity.Superhero;
 import com.fedeflores.superheroes.service.SuperheroesService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,12 +28,14 @@ public class SuperheroesServiceImpl implements SuperheroesService {
     }
 
     @Override
+    @Cacheable("superheroes")
     public List<SuperheroDTO> getAllSuperheroes() {
         List<Superhero> superheroes = superheroesRepository.findAll();
         return superheroes.stream().map(this::copyToDTO).collect(Collectors.toList());
     }
 
     @Override
+    @Cacheable("superheroesById")
     public SuperheroDTO getSuperheroById(int id) throws SuperheroNotFoundException {
         SuperheroDTO dto = new SuperheroDTO();
         Superhero sh = superheroesRepository.findById(id).orElseThrow(() -> new SuperheroNotFoundException(NOTFOUND_MSG+ id));
@@ -39,12 +43,14 @@ public class SuperheroesServiceImpl implements SuperheroesService {
     }
 
     @Override
+    @Cacheable("superheroesByName")
     public List<SuperheroDTO> getSuperheroesByName(String name) {
         List<Superhero> superheroes = superheroesRepository.findByNameContainingIgnoreCase(name);
         return superheroes.stream().map(this::copyToDTO).collect(Collectors.toList());
     }
 
     @Override
+    @CacheEvict(value = { "superheroes", "superheroesById", "superheroesByName" }, allEntries = true)
     public SuperheroDTO updateSuperhero(int id, SuperheroDTO requestedChanges) throws SuperheroNotFoundException {
         Optional<Superhero> superheroOpt = superheroesRepository.findById(id);
         Superhero sh = superheroOpt.orElseThrow(() -> new SuperheroNotFoundException(NOTFOUND_MSG + id));
@@ -56,6 +62,7 @@ public class SuperheroesServiceImpl implements SuperheroesService {
     }
 
     @Override
+    @CacheEvict(value = { "superheroes", "superheroesById", "superheroesByName" }, allEntries = true)
     public void deleteSuperhero(int id) throws SuperheroNotFoundException {
         if (superheroesRepository.existsById(id)) {
             superheroesRepository.deleteById(id);

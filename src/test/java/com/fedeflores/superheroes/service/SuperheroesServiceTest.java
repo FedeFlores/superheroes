@@ -63,7 +63,7 @@ public class SuperheroesServiceTest {
     public void getSuperheroById_NotFoundException() {
         when(superheroesRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-        assertThrows(SuperheroNotFoundException.class, () -> superheroesService.getSuperheroById(1));
+        assertThrows(SuperheroNotFoundException.class, () -> superheroesService.getSuperheroById(anyInt()));
         verify(superheroesRepository, times(1)).findById(anyInt());
     }
 
