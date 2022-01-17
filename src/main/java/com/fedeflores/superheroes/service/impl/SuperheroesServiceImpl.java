@@ -18,6 +18,8 @@ public class SuperheroesServiceImpl implements SuperheroesService {
 
     private SuperheroesRepository superheroesRepository;
 
+    private final static String NOTFOUND_MSG = "No superhero found with id: ";
+
     @Autowired
     public SuperheroesServiceImpl(SuperheroesRepository superheroesRepository) {
         this.superheroesRepository = superheroesRepository;
@@ -32,7 +34,7 @@ public class SuperheroesServiceImpl implements SuperheroesService {
     @Override
     public SuperheroDTO getSuperheroById(int id) throws SuperheroNotFoundException {
         SuperheroDTO dto = new SuperheroDTO();
-        Superhero sh = superheroesRepository.findById(id).orElseThrow(() -> new SuperheroNotFoundException("No superhero found with id: " + id));
+        Superhero sh = superheroesRepository.findById(id).orElseThrow(() -> new SuperheroNotFoundException(NOTFOUND_MSG+ id));
         return copyToDTO(sh);
     }
 
@@ -45,7 +47,7 @@ public class SuperheroesServiceImpl implements SuperheroesService {
     @Override
     public SuperheroDTO updateSuperhero(int id, SuperheroDTO requestedChanges) throws SuperheroNotFoundException {
         Optional<Superhero> superheroOpt = superheroesRepository.findById(id);
-        Superhero sh = superheroOpt.orElseThrow(() -> new SuperheroNotFoundException("No superhero found with id: " + id));
+        Superhero sh = superheroOpt.orElseThrow(() -> new SuperheroNotFoundException(NOTFOUND_MSG + id));
         sh.setName(requestedChanges.getName());
         Superhero updatedSH = superheroesRepository.save(sh);
         SuperheroDTO updatedDTO = new SuperheroDTO();
@@ -58,9 +60,8 @@ public class SuperheroesServiceImpl implements SuperheroesService {
         if (superheroesRepository.existsById(id)) {
             superheroesRepository.deleteById(id);
         } else {
-            throw new SuperheroNotFoundException("No superhero found with id: " + id);
+            throw new SuperheroNotFoundException(NOTFOUND_MSG + id);
         }
-
     }
 
     private SuperheroDTO copyToDTO(Superhero sh){
