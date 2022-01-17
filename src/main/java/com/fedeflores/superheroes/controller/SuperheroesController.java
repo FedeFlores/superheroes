@@ -1,5 +1,6 @@
 package com.fedeflores.superheroes.controller;
 
+import com.fedeflores.superheroes.aspect.TimeLogger;
 import com.fedeflores.superheroes.exception.SuperheroNotFoundException;
 import com.fedeflores.superheroes.model.SuperheroDTO;
 import com.fedeflores.superheroes.service.SuperheroesService;
@@ -20,28 +21,33 @@ public class SuperheroesController {
         this.superheroesService = superheroesService;
     }
 
+    @TimeLogger
     @GetMapping("/superheroes/all")
     public ResponseEntity<List<SuperheroDTO>> getAllSuperheroes(){
         List<SuperheroDTO> superheroes = superheroesService.getAllSuperheroes();
         return superheroes.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(superheroes);
     }
 
+    @TimeLogger
     @GetMapping("/superhero/{id}")
     public ResponseEntity<SuperheroDTO> getSuperheroById(@PathVariable int id) throws SuperheroNotFoundException {
         return ResponseEntity.ok(superheroesService.getSuperheroById(id));
     }
 
+    @TimeLogger
     @GetMapping("/superheroes")
     public ResponseEntity<List<SuperheroDTO>> getSuperheroesByName(@RequestParam String name){
         List<SuperheroDTO> superheroes = superheroesService.getSuperheroesByName(name);
         return superheroes.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(superheroes);
     }
 
+    @TimeLogger
     @PutMapping("/superhero/{id}")
     public ResponseEntity<SuperheroDTO> updateSuperhero(@PathVariable int id, @RequestBody SuperheroDTO superheroDTO) throws SuperheroNotFoundException {
         return ResponseEntity.ok(superheroesService.updateSuperhero(id, superheroDTO));
     }
 
+    @TimeLogger
     @DeleteMapping("/superhero/{id}")
     public ResponseEntity<HttpStatus> deleteSuperhero(@PathVariable int id) throws SuperheroNotFoundException {
         superheroesService.deleteSuperhero(id);
