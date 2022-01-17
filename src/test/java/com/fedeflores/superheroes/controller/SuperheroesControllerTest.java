@@ -1,5 +1,6 @@
 package com.fedeflores.superheroes.controller;
 
+import com.fedeflores.superheroes.exception.SuperheroNotFoundException;
 import com.fedeflores.superheroes.model.SuperheroDTO;
 import com.fedeflores.superheroes.service.SuperheroesService;
 import org.junit.jupiter.api.Test;
@@ -14,10 +15,10 @@ import java.util.Arrays;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SuperheroesController.class)
 public class SuperheroesControllerTest {
@@ -54,6 +55,16 @@ public class SuperheroesControllerTest {
     }
 
     @Test
+    void getSuperheroById_ReturnsNotFound() throws Exception {
+        when(superheroesService.getSuperheroById(anyInt()))
+                .thenThrow(new SuperheroNotFoundException("Superhero not found"));
+
+        mockMvc.perform(get("/superhero/{id}", 1))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$", is("Superhero not found")));
+    }
+
+    @Test
     void getSuperheroesByName() throws Exception {
         SuperheroDTO sh1 = new SuperheroDTO(1, "Batman");
         SuperheroDTO sh2 = new SuperheroDTO(2, "Spiderman");
@@ -80,9 +91,30 @@ public class SuperheroesControllerTest {
     }
 
     @Test
+    void updateSuperhero_ReturnsNotFound() throws Exception {
+        when(superheroesService.updateSuperhero(anyInt(), any(SuperheroDTO.class)))
+                .thenThrow(new SuperheroNotFoundException("Superhero not found"));
+
+        mockMvc.perform(put("/superhero/{id}", 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"name\" : \"Batman\" }"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$", is("Superhero not found")));
+    }
+
+    @Test
     void deleteSuperhero() throws Exception {
         mockMvc.perform(delete("/superhero/{id}", 1))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteSuperhero_ReturnsNotFound() throws Exception {
+        doThrow(new SuperheroNotFoundException("Superhero not found")).when(superheroesService).deleteSuperhero(anyInt());
+
+        mockMvc.perform(delete("/superhero/{id}", 1))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$", is("Superhero not found")));
     }
 
 
