@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.fedeflores</groupId>
 	<artifactId>superheroes</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>superheroes</name>
-	<description>Demo project for Spring Boot</description>
+	<description>W2M Superheroes Challenge</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
