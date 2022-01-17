@@ -1,0 +1,5 @@
+insert into superhero (name) values  ('Batman')
+insert into superhero (name) values  ('Spiderman')
+insert into superhero (name) values  ('Ironman')
+insert into superhero (name) values  ('Captain America')
+insert into superhero (name) values  ('Black Widow')
