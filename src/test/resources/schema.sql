@@ -1,0 +1,1 @@
+create table superhero (id int, name varchar(255))
