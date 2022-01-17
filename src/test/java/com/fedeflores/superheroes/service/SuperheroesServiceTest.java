@@ -16,6 +16,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -42,6 +43,7 @@ public class SuperheroesServiceTest {
         List<SuperheroDTO> response = superheroesService.getAllSuperheroes();
 
         assertEquals(dtos, response);
+        verify(superheroesRepository, times(1)).findAll();
     }
 
     @Test
@@ -54,6 +56,7 @@ public class SuperheroesServiceTest {
         SuperheroDTO response = superheroesService.getSuperheroById(1);
 
         assertEquals(dto, response);
+        verify(superheroesRepository, times(1)).findById(anyInt());
     }
 
     @Test
@@ -61,6 +64,7 @@ public class SuperheroesServiceTest {
         when(superheroesRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         assertThrows(SuperheroNotFoundException.class, () -> superheroesService.getSuperheroById(1));
+        verify(superheroesRepository, times(1)).findById(anyInt());
     }
 
     @Test
@@ -76,6 +80,7 @@ public class SuperheroesServiceTest {
         List<SuperheroDTO> response = superheroesService.getSuperheroesByName("man");
 
         assertEquals(dtos, response);
+        verify(superheroesRepository, times(1)).findByNameContainingIgnoreCase(anyString());
     }
 
     @Test
@@ -92,6 +97,9 @@ public class SuperheroesServiceTest {
         SuperheroDTO response = superheroesService.updateSuperhero(1, updateRequested);
 
         assertEquals(expectedResponse, response);
+        verify(superheroesRepository, times(1)).findById(anyInt());
+        verify(superheroesRepository, times(1)).save(any(Superhero.class));
+
     }
 
     @Test
@@ -102,6 +110,8 @@ public class SuperheroesServiceTest {
         when(superheroesRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         assertThrows(SuperheroNotFoundException.class, () -> superheroesService.updateSuperhero(1, updateRequested));
+        verify(superheroesRepository, times(1)).findById(anyInt());
+        verify(superheroesRepository, times(0)).save(any(Superhero.class));
     }
 
     @Test
@@ -110,7 +120,8 @@ public class SuperheroesServiceTest {
 
         superheroesService.deleteSuperhero(1);
 
-        verify(superheroesRepository, times(1)).deleteById(1);
+        verify(superheroesRepository, times(1)).existsById(anyInt());
+        verify(superheroesRepository, times(1)).deleteById(anyInt());
     }
 
     @Test
@@ -118,5 +129,8 @@ public class SuperheroesServiceTest {
         when(superheroesRepository.existsById(anyInt())).thenReturn(false);
 
         assertThrows(SuperheroNotFoundException.class, () -> superheroesService.deleteSuperhero(1));
+        verify(superheroesRepository, times(1)).existsById(anyInt());
+        verify(superheroesRepository, times(0)).deleteById(anyInt());
+
     }
 }
