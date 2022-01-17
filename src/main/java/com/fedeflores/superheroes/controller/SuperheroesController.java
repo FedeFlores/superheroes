@@ -22,7 +22,8 @@ public class SuperheroesController {
 
     @GetMapping("/superheroes/all")
     public ResponseEntity<List<SuperheroDTO>> getAllSuperheroes(){
-        return ResponseEntity.ok(superheroesService.getAllSuperheroes());
+        List<SuperheroDTO> superheroes = superheroesService.getAllSuperheroes();
+        return superheroes.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(superheroes);
     }
 
     @GetMapping("/superhero/{id}")
@@ -32,7 +33,8 @@ public class SuperheroesController {
 
     @GetMapping("/superheroes")
     public ResponseEntity<List<SuperheroDTO>> getSuperheroesByName(@RequestParam String name){
-        return ResponseEntity.ok(superheroesService.getSuperheroesByName(name));
+        List<SuperheroDTO> superheroes = superheroesService.getSuperheroesByName(name);
+        return superheroes.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(superheroes);
     }
 
     @PutMapping("/superhero/{id}")
