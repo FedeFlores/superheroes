@@ -1,5 +1,6 @@
 package com.fedeflores.superheroes.service;
 
+import com.fedeflores.superheroes.exception.SuperheroNotFoundException;
 import com.fedeflores.superheroes.model.SuperheroDTO;
 import com.fedeflores.superheroes.repository.SuperheroesRepository;
 import com.fedeflores.superheroes.repository.entity.Superhero;
@@ -13,7 +14,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -40,10 +43,11 @@ public class SuperheroesServiceTest {
         List<SuperheroDTO> response = superheroesService.getAllSuperheroes();
 
         assertEquals(dtos, response);
+        verify(superheroesRepository, times(1)).findAll();
     }
 
     @Test
-    public void getSuperheroById() {
+    public void getSuperheroById() throws SuperheroNotFoundException {
         Superhero sh = new Superhero(1, "Batman");
         SuperheroDTO dto = new SuperheroDTO(1, "Batman");
 
@@ -52,6 +56,15 @@ public class SuperheroesServiceTest {
         SuperheroDTO response = superheroesService.getSuperheroById(1);
 
         assertEquals(dto, response);
+        verify(superheroesRepository, times(1)).findById(anyInt());
+    }
+
+    @Test
+    public void getSuperheroById_NotFoundException() {
+        when(superheroesRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        assertThrows(SuperheroNotFoundException.class, () -> superheroesService.getSuperheroById(1));
+        verify(superheroesRepository, times(1)).findById(anyInt());
     }
 
     @Test
@@ -67,10 +80,11 @@ public class SuperheroesServiceTest {
         List<SuperheroDTO> response = superheroesService.getSuperheroesByName("man");
 
         assertEquals(dtos, response);
+        verify(superheroesRepository, times(1)).findByNameContainingIgnoreCase(anyString());
     }
 
     @Test
-    public void updateSuperhero() {
+    public void updateSuperhero() throws SuperheroNotFoundException {
         Superhero foundSuperhero = new Superhero(1, "Batman");
         SuperheroDTO updateRequested = new SuperheroDTO();
         updateRequested.setName("Captain America");
@@ -83,14 +97,40 @@ public class SuperheroesServiceTest {
         SuperheroDTO response = superheroesService.updateSuperhero(1, updateRequested);
 
         assertEquals(expectedResponse, response);
+        verify(superheroesRepository, times(1)).findById(anyInt());
+        verify(superheroesRepository, times(1)).save(any(Superhero.class));
+
     }
 
     @Test
-    public void deleteSuperhero() {
+    public void updateSuperhero_NotFoundException() {
+        SuperheroDTO updateRequested = new SuperheroDTO();
+        updateRequested.setName("Captain America");
+
+        when(superheroesRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        assertThrows(SuperheroNotFoundException.class, () -> superheroesService.updateSuperhero(1, updateRequested));
+        verify(superheroesRepository, times(1)).findById(anyInt());
+        verify(superheroesRepository, times(0)).save(any(Superhero.class));
+    }
+
+    @Test
+    public void deleteSuperhero() throws SuperheroNotFoundException {
         when(superheroesRepository.existsById(anyInt())).thenReturn(true);
 
         superheroesService.deleteSuperhero(1);
 
-        verify(superheroesRepository, times(1)).deleteById(1);
+        verify(superheroesRepository, times(1)).existsById(anyInt());
+        verify(superheroesRepository, times(1)).deleteById(anyInt());
+    }
+
+    @Test
+    public void deleteSuperhero_NotFoundException() {
+        when(superheroesRepository.existsById(anyInt())).thenReturn(false);
+
+        assertThrows(SuperheroNotFoundException.class, () -> superheroesService.deleteSuperhero(1));
+        verify(superheroesRepository, times(1)).existsById(anyInt());
+        verify(superheroesRepository, times(0)).deleteById(anyInt());
+
     }
 }
