@@ -12,12 +12,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -38,7 +37,7 @@ public class SuperheroesControllerTest {
         SuperheroDTO sh2 = new SuperheroDTO(2, "Spiderman");
         SuperheroDTO sh3 = new SuperheroDTO(3, "Ironman");
 
-        when(superheroesService.getAllSuperheroes()).thenReturn(Arrays.asList(sh1, sh2,sh3));
+        when(superheroesService.getAllSuperheroes()).thenReturn(List.of(sh1, sh2,sh3));
 
         mockMvc.perform(get("/superheroes/all"))
                 .andExpect(status().isOk())
@@ -85,7 +84,7 @@ public class SuperheroesControllerTest {
         SuperheroDTO sh1 = new SuperheroDTO(1, "Batman");
         SuperheroDTO sh2 = new SuperheroDTO(2, "Spiderman");
 
-        when(superheroesService.getSuperheroesByName(anyString())).thenReturn(Arrays.asList(sh1, sh2));
+        when(superheroesService.getSuperheroesByName(anyString())).thenReturn(List.of(sh1, sh2));
 
         mockMvc.perform(get("/superheroes").param("name", "man"))
                 .andExpect(status().isOk())

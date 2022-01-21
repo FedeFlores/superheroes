@@ -9,14 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -36,9 +34,9 @@ public class SuperheroesServiceTest {
         SuperheroDTO dto1 = new SuperheroDTO(1, "Batman");
         SuperheroDTO dto2 = new SuperheroDTO(2, "Spiderman");
         SuperheroDTO dto3 = new SuperheroDTO(3, "Ironman");
-        List<SuperheroDTO> dtos = Arrays.asList(dto1, dto2, dto3);
+        List<SuperheroDTO> dtos = List.of(dto1, dto2, dto3);
 
-        when(superheroesRepository.findAll()).thenReturn(Arrays.asList(sh1, sh2, sh3));
+        when(superheroesRepository.findAll()).thenReturn(List.of(sh1, sh2, sh3));
 
         List<SuperheroDTO> response = superheroesService.getAllSuperheroes();
 
@@ -73,9 +71,9 @@ public class SuperheroesServiceTest {
         Superhero sh2 = new Superhero(2, "Spiderman");
         SuperheroDTO dto1 = new SuperheroDTO(1, "Batman");
         SuperheroDTO dto2 = new SuperheroDTO(2, "Spiderman");
-        List<SuperheroDTO> dtos = Arrays.asList(dto1, dto2);
+        List<SuperheroDTO> dtos = List.of(dto1, dto2);
 
-        when(superheroesRepository.findByNameContainingIgnoreCase(anyString())).thenReturn(Arrays.asList(sh1, sh2));
+        when(superheroesRepository.findByNameContainingIgnoreCase(anyString())).thenReturn(List.of(sh1, sh2));
 
         List<SuperheroDTO> response = superheroesService.getSuperheroesByName("man");
 

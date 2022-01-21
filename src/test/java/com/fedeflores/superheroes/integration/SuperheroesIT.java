@@ -67,6 +67,15 @@ public class SuperheroesIT {
     }
 
     @Test
+    @Sql(scripts = "/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void getSuperheroesByName_WhenParamIncludesSpaces() throws Exception {
+        mockMvc.perform(get("/superheroes").param("name", "      man         "))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(3)));
+    }
+
+    @Test
     public void getSuperheroesByName_ReturnsNoContent() throws Exception {
         mockMvc.perform(get("/superheroes").param("name", "man"))
                 .andExpect(status().isNoContent())

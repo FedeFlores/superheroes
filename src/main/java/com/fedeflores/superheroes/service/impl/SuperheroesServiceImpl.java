@@ -45,7 +45,7 @@ public class SuperheroesServiceImpl implements SuperheroesService {
     @Override
     @Cacheable("superheroesByName")
     public List<SuperheroDTO> getSuperheroesByName(String name) {
-        List<Superhero> superheroes = superheroesRepository.findByNameContainingIgnoreCase(name);
+        List<Superhero> superheroes = superheroesRepository.findByNameContainingIgnoreCase(name.strip());
         return superheroes.stream().map(this::copyToDTO).collect(Collectors.toList());
     }
 
@@ -56,9 +56,7 @@ public class SuperheroesServiceImpl implements SuperheroesService {
         Superhero sh = superheroOpt.orElseThrow(() -> new SuperheroNotFoundException(NOTFOUND_MSG + id));
         sh.setName(requestedChanges.getName());
         Superhero updatedSH = superheroesRepository.save(sh);
-        SuperheroDTO updatedDTO = new SuperheroDTO();
-        BeanUtils.copyProperties(updatedSH, updatedDTO);
-        return updatedDTO;
+        return copyToDTO(updatedSH);
     }
 
     @Override
