@@ -56,9 +56,7 @@ public class SuperheroesServiceImpl implements SuperheroesService {
         Superhero sh = superheroOpt.orElseThrow(() -> new SuperheroNotFoundException(NOTFOUND_MSG + id));
         sh.setName(requestedChanges.getName());
         Superhero updatedSH = superheroesRepository.save(sh);
-        SuperheroDTO updatedDTO = new SuperheroDTO();
-        BeanUtils.copyProperties(updatedSH, updatedDTO);
-        return updatedDTO;
+        return copyToDTO(updatedSH);
     }
 
     @Override
